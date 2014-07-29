@@ -1,0 +1,19 @@
+
+  div{
+    width:80px;
+    height:50px;
+    border:1px solid white;
+    background-color: pink;
+    text-align:center;
+    padding-top: 30px;
+  }
+  .left{
+    float:left;
+
+  }
+  .middle{
+    float:left;
+  }
+  .right{
+    margin-left:160px;
+  }
