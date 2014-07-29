@@ -1,0 +1,10 @@
+{
+  "name": "socket-tic-tac-toe",
+  "version": "0.0.1",
+  "description": "cross browser tic-tac-toe game",
+  "dependencies": {
+    "express": "^4.7.2",
+    "socket.io": "^1.0.6"
+    "author": "Bhgairath"
+  }
+}
