@@ -11,7 +11,7 @@ app.get('/', function(req, res){
   
 app.use(express.static(path.join(__dirname,'public')));
 
-io.on('connection', function(socket){
+io.sockets.on('connection', function(socket){
   console.log("user connected");
   logic.initGame(io,socket);
  

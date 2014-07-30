@@ -1,4 +1,9 @@
- var socket = io();
+ var socket = io.connect('http://localhost:3000');
+
+  socket.on('connect',function(){
+    socket.emit('adduser',prompt("What's ur name??"));
+  });
+
   $('div').click(function(event){
     socket.emit('clicked', event.target.id);
   });
@@ -13,10 +18,6 @@
   
     document.getElementById("message").innerHTML = msg;
   });	
-
-  socket.on('left',function(){
-   document.getElementById("message").innerHTML = "Opponent has left!!!";
-  });
 
   function clearMessage(){
      document.getElementById("message").innerHTML = "";

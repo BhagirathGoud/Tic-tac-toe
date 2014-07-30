@@ -17,12 +17,14 @@
  var users_count = 0;
  var io;
  var socket;
-
+ var usernames = {};
+ var rooms = ['room1','room2'];
 //Thids will be called when a new user is added for initializing the game
 exports.initGame = function(sio, gamesocket){
   io = sio;
   socket = gamesocket;
   //Host Events
+  socket.on('adduser',adduser);
   socket.on('clicked',clicked);
   socket.on('disconnect',disconnect);
 }
@@ -30,7 +32,14 @@ exports.initGame = function(sio, gamesocket){
 //////////////////
 //Host Functions//
 //////////////////
-
+function adduser(username){
+  socket.username = username;
+  socket.room = 'room1';
+  usernames[username] = username;
+  socket.join('room1');
+  socket.emit('message',"you have connected!!!");
+  socket.broadcast.to('room1').emit('message',username +" has connected to this room!!!");
+};
 function clicked(id){
    
    logicForMoving(id);		  
@@ -40,7 +49,9 @@ function clicked(id){
 
  function disconnect(){
     console.log('Other player left..');
-    socket.broadcast.emit('left');
+    delete usernames[socket.username];
+    socket.broadcast.to('room1').emit('message',socket.username+" has disconnected!!!!");
+    socket.leave(socket.room);
   };
 
 //this function checks the logic about drawing 'X' or 'O' on client
@@ -60,7 +71,7 @@ function clicked(id){
         }
 
       }
-      io.emit('move', grid);
+      io.sockets.in(socket.room).emit('move',grid);
       x_flag = true;
       o_flag = false; 
     }
@@ -77,7 +88,7 @@ function clicked(id){
         }
 
         }
-        io.emit('move', grid);
+        io.sockets.in(socket.room).emit('move',grid);
         o_flag = true; 
         x_flag = false;
     }
@@ -93,11 +104,11 @@ function clicked(id){
       
       if((win_list[i]["a"] == win_list[i]["b"]) && (win_list[i]["b"] == win_list[i]["c"]) && (win_list[i]["c"] == "X")){
           win = true;
-          io.emit('message', "X won the game!!!!");
+          io.sockets.in(socket.room).emit('message', "X won the game!!!!");
         }
         else if((win_list[i]["a"] == win_list[i]["b"]) && (win_list[i]["b"] == win_list[i]["c"]) && (win_list[i]["c"] == "O")){
           win = true;
-          io.emit('message', "O won the game!!!!");
+          io.sockets.in(socket.room).emit('message', "O won the game!!!!");
         }
       
     }  
@@ -109,7 +120,7 @@ function clicked(id){
       }
     }
     if((count == 9) && (win == false)) {
-        io.emit('message', "Game is drawn!!!!");
+        io.sockets.in(socket.room).emit('message', "Game is drawn!!!!");
     }
     else{
         count = 0;
